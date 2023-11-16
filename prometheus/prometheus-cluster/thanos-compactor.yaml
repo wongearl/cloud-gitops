@@ -1,3 +1,4 @@
+# Thanos Compactor 组件可以对我们收集的历史数据进行下采样，可以减少文件的大小。
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: thanos
-          image: thanosio/thanos:v0.18.0
+          image: quay.io/thanos/thanos:v0.28.1
           args:
             - "compact"
             - "--log.level=debug"

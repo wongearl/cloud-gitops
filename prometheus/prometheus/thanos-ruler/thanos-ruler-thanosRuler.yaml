@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ThanosRuler
+metadata:
+  labels:
+    app.kubernetes.io/component: thanos-ruler
+    app.kubernetes.io/instance: kubesphere
+    app.kubernetes.io/name: thanos-ruler
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 0.31.0
+  name: kubesphere
+  namespace: kubesphere-monitoring-system
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: thanos-ruler
+              app.kubernetes.io/instance: kubesphere
+              app.kubernetes.io/name: thanos-ruler
+              app.kubernetes.io/part-of: kube-prometheus
+          namespaces:
+          - kubesphere-monitoring-system
+          topologyKey: kubernetes.io/hostname
+        weight: 100
+  alertmanagersUrl:
+  - dnssrv+http://alertmanager-operated.kubesphere-monitoring-system.svc:9093
+  evaluationInterval: 1m
+  image: kubesphere/thanos:v0.31.0
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: thanos-ruler
+      app.kubernetes.io/instance: kubesphere
+      app.kubernetes.io/name: thanos-ruler
+      app.kubernetes.io/part-of: kube-prometheus
+      app.kubernetes.io/version: 0.31.0
+  queryEndpoints:
+  - prometheus-operated.kubesphere-monitoring-system.svc:9090
+  replicas: 2
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+  ruleNamespaceSelector: null
+  ruleSelector:
+    matchExpressions:
+    - key: alerting.kubesphere.io/rule_level
+      operator: In
+      values:
+      - namespace
+      - cluster
+      - global

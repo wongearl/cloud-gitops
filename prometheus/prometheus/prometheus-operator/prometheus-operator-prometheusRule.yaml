@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 0.55.1
+    prometheus: k8s
+    role: alert-rules
+  name: prometheus-operator-rules
+  namespace: kubesphere-monitoring-system
+spec:
+  groups: []

@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.6.0
+    prometheus: k8s
+    role: alert-rules
+  name: kube-state-metrics-rules
+  namespace: kubesphere-monitoring-system
+spec:
+  groups: []

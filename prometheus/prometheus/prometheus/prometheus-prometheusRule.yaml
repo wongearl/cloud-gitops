@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.39.1
+    prometheus: k8s
+    role: alert-rules
+  name: prometheus-k8s-prometheus-rules
+  namespace: kubesphere-monitoring-system
+spec:
+  groups:
+  - name: prometheus.rules
+    rules:
+    - expr: |
+        sum by(cluster) (up{job="prometheus-k8s",namespace="kubesphere-monitoring-system"} == 1)
+      record: prometheus:up:sum
+    - expr: |
+        sum(rate(prometheus_tsdb_head_samples_appended_total{job="prometheus-k8s",namespace="kubesphere-monitoring-system"} [5m])) by (job, pod, cluster)
+      record: prometheus:prometheus_tsdb_head_samples_appended:sum_rate

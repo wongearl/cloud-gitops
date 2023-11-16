@@ -1,0 +1,18 @@
+# ThanosRuler Demo
+apiVersion: monitoring.coreos.com/v1
+kind: ThanosRuler
+metadata:
+  name: thanos-ruler-demo
+  labels:
+    example: thanos-ruler
+  namespace: default
+spec:
+  image: quay.io/thanos/thanos:v0.28.1
+  ruleSelector:
+    matchLabels: # 匹配 Rule 规则
+      role: my-thanos-rules
+  queryEndpoints: # querier 地址
+    - dnssrv+_http._tcp.my-thanos-querier.default.svc.cluster.local
+
+# ThanosRuler 组件使用的记录和警报规则与 Prometheus 里面配置的 PrometheusRule 对象，
+# 比如上面的示例中，表示包含 role=my-thanos-rules 标签的 PrometheusRule 对象规则会被添加到 Thanos Ruler Pod 中去。

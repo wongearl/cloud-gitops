@@ -1,3 +1,6 @@
+# Thanos Querier 组件提供了从所有 prometheus 实例中一次性检索指标的能力。它与原 prometheus 的 PromQL 和 HTTP API 是完全兼容的，所以同样可以和 Grafana 一起使用。
+
+# 因为 Querier 组件是要和 Sidecar 以及 Store 组件进行对接的，所以在 Querier 组件的方向参数中需要配置上上面我们启动的 Thanos Sidecar，同样我们可以通过对应的 Headless Service 来进行发现，自动创建的 Service 名为 prometheus-operated（可以通过 Statefulset 查看）
 apiVersion: apps/v1
 kind: Deployment
 metadata:

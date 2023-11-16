@@ -1,3 +1,4 @@
+# 该组件和可以 Querier 组件一起协作从指定对象存储的 bucket 中检索历史指标数据，所以自然在部署的时候我们需要指定对象存储的配置，Store 组件配置完成后还需要加入到 Querier 组件里面去
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
