@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/metrics
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["get"]
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: default
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus # crd 类型，表示资源对象，类似于Pod、Deployment，就是用来管理部署Prometheus应用的
+metadata:
+  labels:
+    prometheus: k8s
+  name: k8s
+spec:
+  alerting:
+    alertmanagers:
+      - name: alertmanager-main
+        namespace: default
+        port: web
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  probeNamespaceSelector: {}
+  probeSelector: {}
+  replicas: 2
+  resources:
+    requests:
+      memory: 400Mi
+  ruleSelector: # 用来匹配rule规则的selector
+    matchLabels: # 匹配的是具有下面两个标签的PrometheusRule这个资源对象
+      prometheus: k8s
+      role: alert-rules
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  # additionalScrapeConfigs:
+  #   key: prometheus-additional.yaml
+  #   name: additional-configs
+  thanos: # 添加 thanos 配置
+    image: quay.io/thanos/thanos:v0.28.1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 500Mi
+    objectStorageConfig:
+      key: thanos.yaml
+      name: thanos-objectstorage
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: rook-ceph-block  # 指定storageclass（别用nfs做存储）
+        resources:
+          requests:
+            storage: 20Gi
+---
+apiVersion: v1
+data:
+  thanos.yaml: dHlwZTogczMKY29uZmlnOgogIGJ1Y2tldDogdGhhbm9zICMgYnVja2V0IOWQjeensAogIGVuZHBvaW50OiBtaW5pby50ZW5hbnQtbnMuc3ZjLmNsdXN0ZXIubG9jYWw6OTAwMCAjIG1pbmlvIOiuv+mXruWcsOWdgAogIGFjY2Vzc19rZXk6IG1pbmlvCiAgc2VjcmV0X2tleTogbWluaW8xMjMKICBpbnNlY3VyZTogdHJ1ZQogIHNpZ25hdHVyZV92ZXJzaW9uMjogZmFsc2UK
+kind: Secret
+metadata:
+  name: thanos-objectstorage
+  namespace: default
+type: Opaque

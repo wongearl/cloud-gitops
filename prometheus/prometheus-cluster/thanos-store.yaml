@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: thanos-store
+  namespace: default
+  labels:
+    app: thanos-store
+spec:
+  selector:
+    matchLabels:
+      app: thanos-store
+  serviceName: thanos-store
+  template:
+    metadata:
+      labels:
+        app: thanos-store
+    spec:
+      containers:
+        - name: thanos
+          image: quay.io/thanos/thanos:v0.28.1
+          args:
+            - "store"
+            - "--log.level=debug"
+            - "--data-dir=/data"
+            - "--objstore.config-file=/etc/secret/thanos.yaml"
+            - "--index-cache-size=500MB"
+            - "--chunk-pool-size=500MB"
+          ports:
+            - name: http
+              containerPort: 10902
+            - name: grpc
+              containerPort: 10901
+          livenessProbe:
+            httpGet:
+              port: 10902
+              path: /-/healthy
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              port: 10902
+              path: /-/ready
+            initialDelaySeconds: 15
+          volumeMounts:
+            - name: object-storage-config
+              mountPath: /etc/secret
+              readOnly: false
+      volumes:
+        - name: object-storage-config
+          secret:
+            secretName: thanos-objectstorage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thanos-store
+  namespace: default
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: grpc
+      port: 10901
+      targetPort: grpc
+  selector:
+    app: thanos-store

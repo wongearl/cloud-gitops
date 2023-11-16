@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-querier
+  namespace: default
+  labels:
+    app: thanos-querier
+spec:
+  selector:
+    matchLabels:
+      app: thanos-querier
+  template:
+    metadata:
+      labels:
+        app: thanos-querier
+    spec:
+      containers:
+        - name: thanos
+          image: quay.io/thanos/thanos:v0.28.1
+          args:
+            - query
+            - --log.level=debug
+            - --query.replica-label=prometheus_replica # prometheus-operator 里面配置的副本标签为 prometheus_replica
+            # Discover local store APIs using DNS SRV.
+            - --store=dnssrv+prometheus-operated:10901
+          ports:
+            - name: http
+              containerPort: 10902
+            - name: grpc
+              containerPort: 10901
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thanos-querier
+  namespace: default
+  labels:
+    app: thanos-querier
+spec:
+  ports:
+    - port: 9090
+      targetPort: http
+      name: http
+  selector:
+    app: thanos-querier
