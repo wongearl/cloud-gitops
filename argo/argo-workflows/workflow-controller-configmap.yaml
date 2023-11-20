@@ -110,7 +110,7 @@ data:
       # podGC:
       #   strategy: OnWorkflowSuccess
       imagePullSecrets:
-      - name: harbor-pull
+      - name: harbor
       volumeClaimTemplates:
         - metadata:
             name: work
