@@ -1312,6 +1312,10 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.name
+        - name: ARGO_EXECUTOR_PLUGINS
+          value: "true"
+        - name: TZ
+          value: Asia/Shanghai
         image: quay.io/argoproj/workflow-controller:v3.4.13
         livenessProbe:
           failureThreshold: 3
