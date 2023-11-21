@@ -6,3 +6,4 @@ metadata:
     app.kubernetes.io/part-of: argocd
     app.kubernetes.io/component: dex-server
   name: argocd-dex-server
+  namespace: argocd
