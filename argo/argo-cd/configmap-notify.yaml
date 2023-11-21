@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+data:
+  subscriptions: |
+    - recipients:
+      - status
+      triggers:
+      - sync-operation-change
+  defaultTriggers: |
+    - sync-operation-change
+  trigger.sync-operation-change: |
+    - when: app.status.operationState.phase in ['Succeeded', 'Running', 'Error', 'Failed']
+      oncePer: app.status.sync.revision
+      send: [status]
+  template.status: |
+    webhook:
+      status:
+        method: POST
+        path: /send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        body: |
+          {"msgtype": "text", "text": {"content": "Application {{.app.metadata.name}} sync is {{.app.status.sync.status}}. Report by: workflow"}}
+    message: |
+      Application {{.app.metadata.name}} sync is {{.app.status.sync.status}}.
+      Application details: {{.context.argocdUrl}}/applications/{{.app.metadata.name}}.
+  service.webhook.status: |
+    url: https://oapi.dingtalk.com/robot
+    headers:
+    - name: Content-Type
+      value: application/json
