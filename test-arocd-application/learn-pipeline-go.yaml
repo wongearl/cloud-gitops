@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: learn-pipeline-go
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://gitee.com/devops-ws/learn-pipeline-go   # 示例工程
+    path: kustomize                                           # 从该目录下查找 Kubernetes 文件
+    targetRevision: HEAD
+    kustomize:
+      namePrefix: foo
