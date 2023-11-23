@@ -33,7 +33,7 @@ data:
         name: GitLab
         config:
           # optional, default = https://gitlab.com
-          baseURL: http://172.11.0.206:6080
+          baseURL: http://172.11.0.206:30023
           # Credentials can be string literals or pulled from the environment.
           clientID: b9119ac2313f62625d8b1e9648f7b10b9dad9c5198f19e5df731b09ffa5d008d
           clientSecret: a0c1bef745da758609acceb5beba3c0104f04c3b0a491aee7c7c479ed3e26309
@@ -52,7 +52,7 @@ data:
         redirectURIs:
           - https://172.11.0.206:32454/oauth2/callback
         secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
-      - id: harbor
+      - id: harbor #OIDC 客户端标识
         name: Harbor
         redirectURIs:
           - http://172.11.0.206:30002/c/oidc/callback
