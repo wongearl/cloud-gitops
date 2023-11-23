@@ -55,5 +55,5 @@ data:
       - id: harbor
         name: Harbor
         redirectURIs:
-          - http://172.11.0.6:30002/c/oidc/callback
+          - http://172.11.0.206:30002/c/oidc/callback
         secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
