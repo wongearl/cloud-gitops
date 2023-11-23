@@ -34,7 +34,7 @@ data:
         config:
           # optional, default = https://gitlab.com
           baseURL: http://172.11.0.206:30023
-          # Credentials can be string literals or pulled from the environment.
+          # Credentials can be string literals or pulled from the environment.创建该密钥的用户要属于下面设置的组
           clientID: b9119ac2313f62625d8b1e9648f7b10b9dad9c5198f19e5df731b09ffa5d008d
           clientSecret: a0c1bef745da758609acceb5beba3c0104f04c3b0a491aee7c7c479ed3e26309
           redirectURI: https://172.11.0.206:31392/api/dex/callback
@@ -42,7 +42,7 @@ data:
           # If `groups` is omitted, all of the user's GitLab groups are returned when the groups scope is present.
           # If `groups` is provided, this acts as a whitelist - only the user's GitLab groups that are in the configured `groups` below will go into the groups claim.  Conversely, if the user is not in any of the configured `groups`, the user will not be authenticated.
           groups:
-          - wongearl
+          - dev
           # flag which will switch from using the internal GitLab id to the users handle (@mention) as the user id.
           # It is possible for a user to change their own user name but it is very rare for them to do so
           useLoginAsID: false
