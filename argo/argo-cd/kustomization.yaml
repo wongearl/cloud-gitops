@@ -1,0 +1,20 @@
+resources:
+- 1native/argocd-native-install.yaml
+- 2configured/argo-workflows-sso.yaml
+- 2configured/argocd-applicationset-controller-metrics.yaml
+- 2configured/argocd-cm.yaml
+- 2configured/argocd-cmd-params-cm.yaml
+- 2configured/argocd-dex-server-deploy.yaml
+- 2configured/argocd-dex-server-sa.yaml
+- 2configured/argocd-metrics.yaml
+- 2configured/argocd-rbac-cm.yaml
+- 2configured/argocd-repo-server-metrics.yaml
+- 2configured/argocd-repo-server-sa.yaml
+- 2configured/argocd-repo-server.yaml
+- 2configured/argocd-server-metrics.yaml
+- 2configured/configmap-notify.yaml
+- 2configured/dex-service.yaml
+- 2configured/secret-harbor-pull.yaml
+- 2configured/secret-repo-lgp.yaml
+- 2configured/service-dex-server.yaml
+
