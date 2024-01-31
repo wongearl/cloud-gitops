@@ -27,7 +27,7 @@
   resources: ["configmaps"]
   verbs: ["get", "create", "update", "delete"]
 - apiGroups: [""]
-  resources: ["secrets"]
+  resources: ["secrets","nodes"]
   verbs: ["get"]
 - apiGroups: [""]
   resources: ["services"]
