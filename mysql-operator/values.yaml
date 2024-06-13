@@ -163,7 +163,7 @@ orchestrator:
     #  memory: 128Mi
 
   service:
-    type: ClusterIP
+    type: NodePort
     port: 80
     nodePort: 303301
 
